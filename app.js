@@ -1,6 +1,13 @@
 const express = require('express');
 const app = express();
 const path = require('path');
+const mongoose = require ('mongoose');
+const database = require('./models/database');
+const modelUser = require('./models/model-user');
+const modeltask = require('./models/model-task');
+
+
+
 
 // Load view engine
 app.set('views', path.join(__dirname, 'views'));
