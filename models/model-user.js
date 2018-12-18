@@ -16,8 +16,3 @@ id:{
 });
 
 const User =  module.exports =mongoose.model('User', userSchema);
-
-<<<<<<< HEAD
-=======
-
->>>>>>> added db, user and task models
