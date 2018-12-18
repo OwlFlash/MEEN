@@ -4,7 +4,7 @@ const path = require('path');
 const mongoose = require ('mongoose');
 const database = require('./models/database');
 const modelUser = require('./models/model-user');
-const modeltask = require('./models/model-task');
+const Todo = require('./models/model-task');
 
 
 
@@ -22,8 +22,11 @@ app.get('/', function(req, res){
 });
 // After logged route
 app.get('/logged', function(req, res){
-    res.render("logged");
-})
+    Todo.find({},function (err, data){
+        if (err) throw err;
+        res.render("logged", {todos: data});
+    });    
+});
 // Login route
 
 app.listen(3000);
