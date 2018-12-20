@@ -2,9 +2,13 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const authRoutes = require('./routes/auth-routes');
-const passportSetup = require('./config/passport-setup');
-const mongoose = require('mongoose');
-const keys = require('./config/keys');
+const mongoose = require ('mongoose');
+const database = require('./models/database');
+const modelUser = require('./models/model-user');
+const Todo = require('./models/model-task');
+
+
+
 
 // Load view engine
 app.set('views', path.join(__dirname, 'views'));
@@ -21,8 +25,11 @@ app.get('/', function(req, res){
 });
 // After logged route
 app.get('/logged', function(req, res){
-    res.render("logged");
-})
+    Todo.find({},function (err, data){
+        if (err) throw err;
+        res.render("logged", {todos: data});
+    });    
+});
 // Login route
 
 app.listen(3000);

@@ -31,9 +31,10 @@
                     <input class="list-button" type="submit" value="Add item">
                 </form>
                 <ul>
-                    <li>Pierwsze zadanie</li>
-                    <li>Drugie zadanie</li>
-                    <li>Trzecie zadanie</li>
+                    <% for (var i =0; i < todos.length; i++){%>
+                        <li><%= todos[i].item%></li>
+                    <%} %>
+                   
                 </ul>
             </div>
         </div>
