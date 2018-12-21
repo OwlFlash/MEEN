@@ -6,6 +6,7 @@ const mongoose = require ('mongoose');
 const database = require('./models/database');
 const modelUser = require('./models/model-user');
 const Todo = require('./models/model-task');
+const passportSetup = require('./config/passport-setup');
 
 
 

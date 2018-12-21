@@ -246,6 +246,13 @@ label {
     text-decoration: line-through;
 }
 
+.google-btn {
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+    background: #ff5353;
+}
+
 
 
 .footer {
