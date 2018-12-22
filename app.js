@@ -6,15 +6,12 @@ const mongoose = require ('mongoose');
 const database = require('./models/database');
 const modelUser = require('./models/model-user');
 const Todo = require('./models/model-task');
+const bodyParser = require('body-parser');
+const urlencodedParser = bodyParser.urlencoded({
+    extended: false
+});
 const passportSetup = require('./config/passport-setup');
 const users = require('./routes/users');
-
-mongoose.connect('mongodb://localhost/meen', {
-        useNewUrlParser: true
-    })
-    .then(() => console.log('Connected to mongoDB'))
-    .catch(err => console.error('Could not connect to mongoDB'));
-
 
 // Load view engine
 app.set('views', path.join(__dirname, 'views'));
@@ -37,6 +34,38 @@ app.get('/logged', function(req, res){
         res.render("logged", {todos: data});
     });    
 });
+
+// Create new data 
+app.post('/logged', urlencodedParser, function (req, res) {
+    const newTodo = Todo(req.body).save(function (err, data) {
+        if (err) throw err;
+        res.json(data);
+        console.log(req.body);
+    });
+});
+// Delete data
+app.delete('/logged/:item', function (req, res) {
+    const query = Todo.find({
+        item: req.params.item.replace(/\-/g, " ")
+    });
+    query.deleteOne(function (err, data) {
+        if (err) throw err;
+        res.json(data);
+    });
+});
+// Do dokonczenia
+// // Update data
+// app.put('/logged/:item', function (req, res) {
+//     const query = Todo.find({
+//         item: req.params.item.replace(/\-/g, " ")
+//     });
+//     Todo.update(query, req.body, function (err, data) {
+//         if (err) throw err;
+//         res.json(data);
+//         console.log(req.body);
+//     });
+// });
+
 // Login route
 
 app.listen(3000);
