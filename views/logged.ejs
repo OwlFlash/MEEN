@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP"
         crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=Bree+Serif&amp;subset=latin-ext" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-1.12.3.min.js" integrity="sha256-aaODHAgvwQW1bFOGXMeX+pC4PZIPsvn2h1sArYOhgXQ="
+        crossorigin="anonymous"></script>
+    <script type="text/javascript" src="/todo-list.js"></script>
 
 </head>
 
@@ -32,8 +35,7 @@
                 </form>
                 <ul>
                     <% for (var i =0; i < todos.length; i++){%>
-                        <li><%= todos[i].item%></li>
-                    <%} %>
+                    <li><span class='list-item'><%= todos[i].item%></span><a class='delete-button' href="#"><i class="fas fa-trash"></i></a></li><%} %>
                    
                 </ul>
             </div>
