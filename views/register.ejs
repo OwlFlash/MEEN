@@ -16,23 +16,29 @@
         <div class="header">
             <div class="logo"><i class="fas fa-clipboard-list"></i></div>
             <div class="tittle">MEEN - Your Online To-do List</div>
+            <div class="user-panel">
+                <span>Username</span>
+            <div class="logout-button">
+            <a href="/">Logout</a></div>
+            </div>
         </div>
         <div class="content">
-            <div class="login-container">
-                <div class='login-header'>Logowanie</div>
-                <div class='form-container'>
-                    <form class="login-form">
-                        <label>Login:</label>
-                        <input class="login-input" type="text" placeholder="login" onfocus="this.placeholder=''" onblur="this.placeholder='login'">
-                        <label>Password:</label>
-                        <input class="login-input" type="password" placeholder="password" onfocus="this.placeholder=''"
-                            onblur="this.placeholder='password'">
-                        <a class="login-btn" href="register">Register</a>
-                        <a class="google-btn" href="/auth/google">Login with Google+</a>
-                        <input class="login-button" type="submit" value="Log in">
-                    </form>
-                </div>
-            </div>
+<div class="register-container">
+    <div class="register-header">Register</div>
+    <div class="formregister-container">
+        <form action="/" method="post">
+            <input type="text" name="email" placeholder="E-mail" required=""><br>
+            <input type="text" name="username" placeholder="Username" required=""><br>
+            <input type="password" name="password" placeholder="Password" required=""><br>
+            <input type="password" name="passwordConf" placeholder="Confirm Password" required=""><br>
+            <input type="submit" value="REGISTER">
+        </form>
+    </div>
+</div>
+</div>
+<div class="clear"></div>
+<!--//signin-form-->
+</div>
         </div>
         <div class="footer">
             <div class="footer-text">
