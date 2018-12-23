@@ -1,57 +1,128 @@
-const bcrypt = require('bcrypt');
-const _ = require('lodash');
-const {User,validate} = require('../models/model-user');
-const mongoose = require('mongoose');
-const express = require('express');
-const router = express.Router();
+var express = require('express');
+var router = express.Router();
+var expressValidator = require('express-validator');
+router.use(expressValidator())
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
 
-router.get('/me', async (req, res) => {
-    const user = await User.findById(req.user._id).select('-password');
-    res.send(user);
+var User = require('../models/model-user');
+
+// Register
+router.get('/register', function (req, res) {
+    res.render('register');
 });
 
-router.post('/login', async (req, res) => {
-    const {error} = validate(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
-
-    let user = await User.findOne({
-        email: req.body.email
-    });
-    if (user) return res.status(400).send('User already registered.');
-
-    user = new User(_.pick(req.body, ['username', 'email', 'password']));
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(user.password, salt);
-    await user.save();
-
-    const token = user.generateAuthToken();
-    res.header('x-auth-token', token).send(_.pick(user, ['_id', 'name', 'email']));
+// Login
+router.post('/login', function (req, res) {
+    res.redirect('/logged');
 });
 
-var passport = require('passport'),
-    LocalStrategy = require('passport-local').Strategy;
+// Register User
+router.post('/register', function (req, res) {
+    var name = req.body.name;
+    var email = req.body.email;
+    var username = req.body.username;
+    var password = req.body.password;
+    var passwordConf = req.body.passwordConf;
 
-passport.use(new LocalStrategy(
-    function (username, password, done) {
+    // Validation
+    req.checkBody('name', 'Name is required').notEmpty();
+    req.checkBody('email', 'Email is required').notEmpty();
+    req.checkBody('email', 'Email is not valid').isEmail();
+    req.checkBody('username', 'Username is required').notEmpty();
+    req.checkBody('password', 'Password is required').notEmpty();
+    req.checkBody('passwordConf', 'Passwords do not match').equals(req.body.password);
+
+    var errors = req.validationErrors();
+
+    if (errors) {
+        res.render('register', {
+            errors: errors
+        });
+    } else {
+        //checking for email and username are already taken
         User.findOne({
-            name: username
+            username: {
+                "$regex": "^" + username + "\\b",
+                "$options": "i"
+            }
         }, function (err, user) {
-            if (err) {
-                return done(err);
-            }
-            if (!user) {
-                return done(null, false, {
-                    message: 'Incorrect username.'
-                });
-            }
-            if (!user.validPassword(password)) {
-                return done(null, false, {
-                    message: 'Incorrect password.'
-                });
-            }
-            return done(null, user);
+            User.findOne({
+                email: {
+                    "$regex": "^" + email + "\\b",
+                    "$options": "i"
+                }
+            }, function (err, mail) {
+                if (user || mail) {
+                    res.render('register', {
+                        user: user,
+                        mail: mail
+                    });
+                } else {
+                    var newUser = new User({
+                        name: name,
+                        email: email,
+                        username: username,
+                        password: password
+                    });
+                    User.createUser(newUser, function (err, user) {
+                        if (err) throw err;
+                        console.log(user);
+                    });
+                    req.flash('success_msg', 'You are registered and can now login');
+                    res.redirect('/login');
+                }
+            });
         });
     }
-));
+});
+
+var flash = require("connect-flash");
+router.use(flash());
+
+passport.use(new LocalStrategy({
+    passReqToCallback: true
+},
+    function (username, password, done) {
+        User.getUserByUsername(username, function (err, user) {
+            if (err) throw err;
+            if (!user) {
+                return done(null, false, {
+                    message: 'Unknown User'
+                });
+            }
+
+            User.comparePassword(password, user.password, function (err, isMatch) {
+                if (err) throw err;
+                if (isMatch) {
+                    return done(null, user);
+                } else {
+                    return done(null, false, {
+                        message: 'Invalid password'
+                    });
+                }
+            });
+        });
+    }));
+
+passport.serializeUser(function (user, done) {
+    done(null, user.id);
+});
+
+passport.deserializeUser(function (id, done) {
+    User.getUserById(id, function (err, user) {
+        done(err, user);
+    });
+});
+
+router.post('/login',
+    passport.authenticate('local', {
+        successRedirect: '/',
+        failureRedirect: '/users/login',
+        failureFlash: true
+    }),
+    function (req, res) {
+        res.redirect('/');
+    });
 
 module.exports = router;
