@@ -19,7 +19,11 @@
   "homepage": "https://github.com/Baroshem/MEEN#readme",
   "dependencies": {
     "bcrypt": "^3.0.2",
+<<<<<<< HEAD
     "connect-flash": "^0.1.1",
+=======
+    "body-parser": "^1.18.3",
+>>>>>>> 11ef1e47fbd295ec3e4829b19835ff7b6de18145
     "connect-mongo": "^2.0.3",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
